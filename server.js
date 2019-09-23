@@ -1,6 +1,6 @@
 var express = require('express');
 	app = express();
-	port = 3000;
+	port = process.env.PORT;
 	zlFetch = require('zl-fetch');
 	bodyParser = require('body-parser');
 
