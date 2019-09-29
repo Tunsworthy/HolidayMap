@@ -17,7 +17,17 @@
         padding: 0;
       }
     </style>
+   <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">-->
   <script src="https://cdn.jsdelivr.net/npm/zl-fetch@2.1.8"></script>
+  <script>
+  window.FontAwesomeConfig = {
+    searchPseudoElements: true
+  }
+</script>
+  <link href="/fontawesome/css/all.css" rel="stylesheet">
+  <!-- <script src="https://use.fontawesome.com/releases/v5.11.2/js/all.js" data-search-pseudo-elements></script>-->
+  <!-- <script src="https://use.fontawesome.com/6608b6cbc6.js"></script> -->
+  <!-- <script type="text/javascript" src="/fontawesome/js/all.js" data-search-pseudo-elements='ture' autoAddCss='ture' showMissingIcons='ture'></script> -->
   </head>
   <body>
     <div id="map"></div>
@@ -52,7 +62,7 @@ async function firstAsync() {
         zlFetch(urllocations,{token: token})
         .then(response => {
             var locations = response.body;
-///get the last checkin and make it centre---
+///get the last checkin and make it centre///
          const getcenter = locations.find(location => location.code == window.checkin.Location);
          var center = new google.maps.LatLng(getcenter.lat , getcenter.lng)
          var map = new google.maps.Map(document.getElementById('map'), {
@@ -64,19 +74,52 @@ async function firstAsync() {
             for(var location of locations){
               var dynamicVarName = location.code;
               window[dynamicVarName] = new google.maps.LatLng(location.lat , location.lng)
+              //checkin icon//
               if (location.code == window.checkin.Location){
-                var marker = new google.maps.Marker({
-                  position: window[dynamicVarName],
-                  map: map,
-                icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABmJLR0QA/wD/AP+gvaeTAAABkUlEQVRoge2Wu0oDQRhGz2RVNM0K9mpjFYmKlwfw0liI72AEq4CI2qb2QiQIpshriBbmCRSMIcHCRh9BRQIxu2PhCrGIZDO/jOCcbpf59puzM3sBh+N/o6QvmL7OTqK8DLAMjEenH4ErdFCqzhdqkn1iAql6bsBrPOeBLSDRYVigFGetQX+nnso1JXpFBKLJXwCLXQU05SDpr0pIdLpTsYjufHeTB1AsJRovRxLdxisQ7fkK4MWMBipk6m4hXzfpN18B5W0Sf/IAHh4bpvXGAvrzbdNbVusV035jAQWjBukx036Jh9jkGsbPoITAk6UsILGFFGWDuEkWkFiBgCIQ9pAMQ6WLpvXGAtF7/DR2UOtCbfbk3rRf5EscDPm7aC67Ha/hPEgO70t0iwjUU7lmv3pbA46B1g9D39Ecjrz663/qZ66d6dvshA77MlrrvW9FSh2oRKtUmSk8SPaJC3yRvtnW7cfVufyvdIlsIZs4Ads4Ads4Ads4Ads4Ads4Ads4Ads4Ads4Ads4Ads4AYfDYZcPELVi827iFpYAAAAASUVORK5CYII="
-                });
-            } else {  
-              var marker = new google.maps.Marker({
-                position: window[dynamicVarName],
-                map: map,
-                icon: 'https://img.icons8.com/material/48/000000/map-pin--v1.png'
-              });
+var marker = new google.maps.Marker({
+  position: window[dynamicVarName],
+  map: map,
+  icon: {
+    path: google.maps.SymbolPath.CIRCLE,
+    fillColor: '#00cd00',
+    fillOpacity: 1,
+    strokeWeight: 0,
+    scale: 15
+    },
+  label: {
+    fontFamily: "'Font Awesome 5 Free'",
+    fontWeight: '900',
+    text: "\uf00c",
+    color: 'white'
+  }
+ },);
+      } else { 
+
+if(location.type === "City"){var fonticon = "\uf64f"}
+if(location.type === "Airport"){var fonticon = "\uf072"}
+if(location.type === "BusStation"){var fonticon = "\uf207"}
+if(location.type === "Hostel"){var fonticon = "\uf594"}
+if(location.type === "Hotel"){var fonticon = "\uf594"}
+
+var marker = new google.maps.Marker({
+  position: window[dynamicVarName],
+  map: map,
+  icon: {
+    path: google.maps.SymbolPath.CIRCLE,
+    fillColor: '#9c9c9c',
+    fillOpacity: 1,
+    strokeWeight: 0,
+    scale: 15
+    },
+  label: {
+    fontFamily: "'Font Awesome 5 Free'",
+    fontWeight: '900',
+    text: fonticon,
+    color: 'white'
+  }
+ },);
             }
+           //endelse 
           }
         //Start of Routes
         zlFetch(urlroutes,{token: token})
@@ -134,6 +177,7 @@ async function firstAsync() {
 
 
 firstAsync()
+
      
 };
 

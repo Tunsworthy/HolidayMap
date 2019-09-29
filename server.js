@@ -13,10 +13,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 
+
+
 app.get('/',function(req,res) {
   res.sendFile(__dirname +'/public/map.html');
 });
 
+app.use('/fontawesome', express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free')); // redirect bootstrap JS
 
 app.use(function(req, res) {
   res.status(404).send({url: req.originalUrl + ' not found'})
