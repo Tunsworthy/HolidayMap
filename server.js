@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.get('/',function(req,res) {
   res.sendFile(__dirname +'/public/map.html');
 });
-
+app.use('/moment', express.static(__dirname + '/node_modules/moment')); // redirect bootstrap JS
 app.use('/fontawesome', express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free')); // redirect bootstrap JS
 
 app.use(function(req, res) {

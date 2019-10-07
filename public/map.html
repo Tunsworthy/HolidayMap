@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <title>Tom and MQ's Travel Map</title>
-    <style>
+<head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <title>Tom and MQ's Travel Map</title>
+  <style>
       /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
+      * element that contains the map. */
       #map {
         height: 100%;
       }
@@ -17,134 +17,152 @@
         padding: 0;
       }
     </style>
-   <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">-->
-  <script src="https://cdn.jsdelivr.net/npm/zl-fetch@2.1.8"></script>
-  <script>
-  window.FontAwesomeConfig = {
-    searchPseudoElements: true
-  }
-</script>
-  <link href="/fontawesome/css/all.css" rel="stylesheet">
-  <!-- <script src="https://use.fontawesome.com/releases/v5.11.2/js/all.js" data-search-pseudo-elements></script>-->
-  <!-- <script src="https://use.fontawesome.com/6608b6cbc6.js"></script> -->
-  <!-- <script type="text/javascript" src="/fontawesome/js/all.js" data-search-pseudo-elements='ture' autoAddCss='ture' showMissingIcons='ture'></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/zl-fetch@2.1.8"></script>
+<!--    <script>
+      window.FontAwesomeConfig = {
+        searchPseudoElements: true
+      }
+    </script>-->
+    <script src="/moment/moment.js"></script>
+    <script>
+        moment().format();
+    </script>
+    <link href="/fontawesome/css/all.css" rel="stylesheet">
   </head>
   <body>
     <div id="map"></div>
     <script>
-function initMap() {
-var lineSymbol = {
-  path: 'M 0,-1 0,1',
-  strokeOpacity: 1,
-  scale: 2,
-};
-var Symbolarrow =  {
-  path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-  offset: '100%',
-  fillColor: "black",
-  fillOpacity: 1,
-  strokeOpacity: 1,
-  };
-  function sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
-  var iconBase = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/';
-  var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDg3ZTE3N2YwNWMzMDEyNDc0MWIzYzgiLCJpYXQiOjE1NjkxODYxNjd9.JHnTyllaXWWgwvNgzFDqikHxMpxRZxnKWzISYEcjmjE'
-  var urlcheckin = 'https://holidayapi.herokuapp.com/Checkin/latest'
-  var urllocations = 'https://holidayapi.herokuapp.com/locations'
-  var urlroutes = 'https://holidayapi.herokuapp.com/routes'
-  
-async function firstAsync() {
-   let promise = new Promise((res, rej) => {
-      zlFetch(urlcheckin,{token: token})
-      .then(response => {
-        window.checkin = response.body;
+      function initMap() {
+        var lineSymbol = {
+          path: 'M 0,-1 0,1',
+          strokeOpacity: 1,
+          scale: 2,
+        };
+        var Symbolarrow =  {
+          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+          offset: '100%',
+          fillColor: "black",
+          fillOpacity: 1,
+          strokeOpacity: 1,
+        };
+        function sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
+        var iconBase = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/';
+        var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDg3ZTE3N2YwNWMzMDEyNDc0MWIzYzgiLCJpYXQiOjE1NjkxODYxNjd9.JHnTyllaXWWgwvNgzFDqikHxMpxRZxnKWzISYEcjmjE'
+        var urlcheckin = 'https://holidayapi.herokuapp.com/Checkin/latest'
+        var urllocations = 'https://holidayapi.herokuapp.com/locations'
+        var urlroutes = 'https://holidayapi.herokuapp.com/routes'
+
+        async function firstAsync() {
+         let promise = new Promise((res, rej) => {
+          zlFetch(urlcheckin,{token: token})
+          .then(response => {
+            window.checkin = response.body;
         //console.log(window.checkin)
 ///////////////start location////////////////////
-        zlFetch(urllocations,{token: token})
-        .then(response => {
-            var locations = response.body;
+zlFetch(urllocations,{token: token})
+.then(response => {
+  var locations = response.body;
 ///get the last checkin and make it centre///
-         const getcenter = locations.find(location => location.code == window.checkin.Location);
-         var center = new google.maps.LatLng(getcenter.lat , getcenter.lng)
-         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
-          center: center,
-          mapTypeId: 'roadmap'
-        }); 
+const getcenter = locations.find(location => location.code == window.checkin.Location);
+var center = new google.maps.LatLng(getcenter.lat , getcenter.lng)
+var map = new google.maps.Map(document.getElementById('map'), {
+  zoom: 7,
+  center: center,
+  mapTypeId: 'roadmap'
+}); 
 
-            for(var location of locations){
-              var dynamicVarName = location.code;
-              window[dynamicVarName] = new google.maps.LatLng(location.lat , location.lng)
+for(var location of locations){
+  var dynamicVarName = location.code;
+  window[dynamicVarName] = new google.maps.LatLng(location.lat , location.lng)
               //checkin icon//
               if (location.code == window.checkin.Location){
-var marker = new google.maps.Marker({
-  position: window[dynamicVarName],
-  map: map,
-  icon: {
-    path: google.maps.SymbolPath.CIRCLE,
-    fillColor: '#00cd00',
-    fillOpacity: 1,
-    strokeWeight: 0,
-    scale: 15
-    },
-  label: {
-    fontFamily: "'Font Awesome 5 Free'",
-    fontWeight: '900',
-    text: "\uf00c",
-    color: 'white'
-  }
- },);
-      } else { 
+                var checkincontentString = '<div id="content">'+
+                '<div id="siteNotice">'+
+                '</div>'+
+                '<h1 id="firstHeading" class="firstHeading">'+window.checkin.Location +'</h1>'+
+                '<div id="bodyContent">'+
+                '<p><b>Check-In: ' + moment(window.checkin.Checkin_date).format('DD/MM/YYYY HH:MM')
+                '</div>'+
+                '</div>';
+                var infowindow = new google.maps.InfoWindow({
+                  content: checkincontentString,
+                  position: window[dynamicVarName],
+                  map: map
+                });
+                
 
-if(location.type === "City"){var fonticon = "\uf64f"}
-if(location.type === "Airport"){var fonticon = "\uf072"}
-if(location.type === "BusStation"){var fonticon = "\uf207"}
-if(location.type === "Hostel"){var fonticon = "\uf594"}
-if(location.type === "Hotel"){var fonticon = "\uf594"}
+                var marker = new google.maps.Marker({
+                  position: window[dynamicVarName],
+                  map: map,
+                  icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: '#00cd00',
+                    fillOpacity: 1,
+                    strokeWeight: 0,
+                    scale: 15,
+                    optimized: false,
+                    zIndex:99999999
+                  },
+                  label: {
+                    fontFamily: "'Font Awesome 5 Free'",
+                    fontWeight: '900',
+                    text: "\uf00c",
+                    color: 'white'
+                  }
+                },);
+//end of checkin
+} else { 
 
-var marker = new google.maps.Marker({
-  position: window[dynamicVarName],
-  map: map,
-  icon: {
-    path: google.maps.SymbolPath.CIRCLE,
-    fillColor: '#9c9c9c',
-    fillOpacity: 1,
-    strokeWeight: 0,
-    scale: 15
-    },
-  label: {
-    fontFamily: "'Font Awesome 5 Free'",
-    fontWeight: '900',
-    text: fonticon,
-    color: 'white'
-  }
- },);
-            }
+  if(location.type === "City"){var fonticon = "\uf64f"}
+    if(location.type === "Airport"){var fonticon = "\uf072"}
+      if(location.type === "BusStation"){var fonticon = "\uf207"}
+        if(location.type === "Hostel"){var fonticon = "\uf594"}
+          if(location.type === "Hotel"){var fonticon = "\uf594"}
+
+            var marker = new google.maps.Marker({
+              position: window[dynamicVarName],
+              map: map,
+              icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: '#9c9c9c',
+                fillOpacity: 1,
+                strokeWeight: 0,
+                scale: 15
+              },
+              label: {
+                fontFamily: "'Font Awesome 5 Free'",
+                fontWeight: '900',
+                text: fonticon,
+                color: 'white'
+              }
+            },);
+        }
            //endelse 
-          }
+         }
         //Start of Routes
         zlFetch(urlroutes,{token: token})
         .then(response => {
-        var routes = response.body;
-        for(var route of routes){
-        var line = new google.maps.Polyline({
-          path: [eval(route.Origin), eval(route.Destination)],
-          strokeOpacity: 0,
-          icons: [
-          {
-              icon: Symbolarrow,
-              offset: '100',
-              fillOpacity: 1,
-              strokeOpacity: 1,
-            },
-          {
-            icon: lineSymbol,
-            offset: '0',
-            repeat: '20px'
-          }
-          ],
-          map: map
-        });
-      };
+          var routes = response.body;
+          for(var route of routes){
+            var line = new google.maps.Polyline({
+              path: [eval(route.Origin), eval(route.Destination)],
+              strokeOpacity: 0,
+              icons: [
+              {
+                icon: Symbolarrow,
+                offset: '100',
+                fillOpacity: 1,
+                strokeOpacity: 1,
+              },
+              {
+                icon: lineSymbol,
+                offset: '0',
+                repeat: '20px'
+              }
+              ],
+              map: map
+            });
+          };
 
         })
         .catch(error => {
@@ -153,37 +171,37 @@ var marker = new google.maps.Marker({
           const status = error.status;
         });
         //End of Routes
-        })
-        .catch(error => {
-          const headers = error.headers;
-          const body = error.body;
-          const status = error.status;
-        });
-///////////////End location////////////////////
       })
-      .catch(error => {
-        const headers = error.headers;
-        const body = error.body;
-        const status = error.status;
-      });
+.catch(error => {
+  const headers = error.headers;
+  const body = error.body;
+  const status = error.status;
+});
+///////////////End location////////////////////
+})
+.catch(error => {
+  const headers = error.headers;
+  const body = error.body;
+  const status = error.status;
+});
 });
     // wait until the promise returns us a value
     let result = await promise; 
-  
+
     // "Now it's done!"
     var running = false
     alert(result); 
+  };
+
+
+  firstAsync()
+
+
 };
 
-
-firstAsync()
-
-     
-};
-
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPq7ppKU_PmsRcuD83bmaCZFt1q1L-8sQ&callback=initMap&maptype=roadmap">
-    </script>
-  </body>
+</script>
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPq7ppKU_PmsRcuD83bmaCZFt1q1L-8sQ&callback=initMap&maptype=roadmap">
+</script>
+</body>
 </html>
